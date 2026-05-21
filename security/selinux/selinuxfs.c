@@ -126,8 +126,10 @@ static ssize_t sel_read_enforce(struct file *filp, char __user *buf,
 	char tmpbuf[TMPBUFLEN];
 	ssize_t length;
 
-	length = scnprintf(tmpbuf, TMPBUFLEN, "%d",
-			   enforcing_enabled(fsi->state));
+	/* v7 fake-enforce: always report Enforcing to userspace.
+	 * Real policy stays permissive so KSU/SUSFS can operate. */
+	length = scnprintf(tmpbuf, TMPBUFLEN, "%d", 1);
+	(void)fsi;
 	return simple_read_from_buffer(buf, count, ppos, tmpbuf, length);
 }
 
